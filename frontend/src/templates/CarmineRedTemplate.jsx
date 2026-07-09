@@ -19,16 +19,59 @@ const palette = {
   cream: "#FBF1E0",
 };
 
-function Butterfly({ style, delay = 0 }) {
+// Ambient motifs: the gold flower (❀) and cream star (✦) — the same two
+// symbols already used elsewhere on this card (hero flourish, old
+// butterfly) — now drift top-to-bottom across the whole page. The travel
+// curve (times/positions) is copied exactly from the Rajwada theme's
+// falling garland so both themes fall at the same speed.
+const FALL_TIMES = [0, 0.08, 0.92, 1];
+const FALL_Y = ["-5vh", "3.8vh", "96.2vh", "105vh"];
+
+const FLOWERS = [
+  { left: "10%", delay: 0, duration: 12, size: "1.6rem" },
+  { left: "38%", delay: 5, duration: 14, size: "1.5rem" },
+  { left: "66%", delay: 2.5, duration: 11, size: "1.5rem" },
+  { left: "88%", delay: 7, duration: 13, size: "1.3rem" },
+];
+
+const STARS = [
+  { left: "6%", delay: 0.5, duration: 10, size: "1.2rem" },
+  { left: "18%", delay: 2.5, duration: 11.5, size: "1rem" },
+  { left: "30%", delay: 4, duration: 9.5, size: "1.3rem" },
+  { left: "42%", delay: 1, duration: 12, size: "0.95rem" },
+  { left: "54%", delay: 5.5, duration: 10.5, size: "1.2rem" },
+  { left: "62%", delay: 3, duration: 11, size: "1rem" },
+  { left: "74%", delay: 6.5, duration: 9, size: "1.1rem" },
+  { left: "84%", delay: 2, duration: 12.5, size: "0.95rem" },
+  { left: "94%", delay: 4.5, duration: 10, size: "1.2rem" },
+];
+
+function FallingMotifs() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 0, rotate: -8 }}
-      animate={{ opacity: [0, 0.8, 0.8, 0], y: [0, -18, -10, -30], rotate: [-8, 8, -8] }}
-      transition={{ duration: 6, repeat: Infinity, delay, ease: "easeInOut" }}
-      style={{ position: "absolute", fontSize: "1.4rem", color: palette.cream, ...style }}
-    >
-      ✦
-    </motion.div>
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden" }}>
+      {FLOWERS.map((f, i) => (
+        <motion.div
+          key={`fl-${i}`}
+          initial={{ y: FALL_Y[0], opacity: 0, rotate: 0 }}
+          animate={{ y: FALL_Y, opacity: [0, 0.85, 0.85, 0], rotate: [0, 27.2, 312.8, 340] }}
+          transition={{ duration: f.duration, repeat: Infinity, delay: f.delay, ease: "linear", times: FALL_TIMES }}
+          style={{ position: "absolute", left: f.left, fontSize: f.size, color: palette.gold }}
+        >
+          ❀
+        </motion.div>
+      ))}
+      {STARS.map((s, i) => (
+        <motion.div
+          key={`st-${i}`}
+          initial={{ y: FALL_Y[0], x: 0, opacity: 0, rotate: 0 }}
+          animate={{ y: FALL_Y, x: [0, 2.88, -5.52, -10], opacity: [0, 0.75, 0.75, 0], rotate: [0, 25.6, 294.4, 320] }}
+          transition={{ duration: s.duration, repeat: Infinity, delay: s.delay, ease: "linear", times: FALL_TIMES }}
+          style={{ position: "absolute", left: s.left, fontSize: s.size, color: palette.cream }}
+        >
+          ✦
+        </motion.div>
+      ))}
+    </div>
   );
 }
 
@@ -106,10 +149,7 @@ export default function CarmineRedTemplate({ invite, lang, RsvpForm }) {
         overflow: "hidden",
       }}
     >
-      <Butterfly style={{ top: "12%", left: "8%" }} delay={0} />
-      <Butterfly style={{ top: "20%", right: "10%" }} delay={1.2} />
-      <Butterfly style={{ top: "55%", left: "15%" }} delay={2.1} />
-      <Butterfly style={{ top: "70%", right: "12%" }} delay={0.6} />
+      <FallingMotifs />
 
       {/* Hero - bold calligraphic headline like the reference card */}
       <section

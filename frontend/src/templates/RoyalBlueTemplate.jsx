@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { getTranslation, bengaliFonts } from "../utils/translations";
 
 // "Rajwada" - a moonlit-court theme. Deep violet night sky, frost-white
@@ -25,13 +25,13 @@ const palette = {
 const FLOWER_DATA_URI =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><g><path style='fill:%23FF80AC;' d='M311.382,320.494H200.328c-16.978,30.049-27.952,72.457-27.952,108.028c0,55.392,28.087,83.478,83.478,83.478s83.478-28.087,83.478-83.478C339.333,392.951,328.361,350.543,311.382,320.494z'/><path style='fill:%23FF80AC;' d='M172.388,240.162c-0.055,0-0.109,0-0.158,0c-34.511,0.321-76.712,12.016-107.522,29.804C16.735,297.663,6.459,336.027,34.154,384c8.048,13.945,21.266,33.446,43.027,41.809c6.945,2.668,14.271,4,21.961,4c15.038,0,31.446-5.092,49.044-15.255c30.816-17.788,62.049-48.494,79.581-78.228L172.388,240.162z'/></g><g><path style='fill:%23F26D99;' d='M477.556,128c-8.048-13.945-21.266-33.446-43.027-41.809c-20.532-7.891-44.413-4.108-71.005,11.255c-30.816,17.788-62.049,48.494-79.581,78.228l55.381,96.162c0.055,0,0.109,0,0.158,0c34.511-0.321,76.712-12.016,107.522-29.804c26.593-15.348,41.82-34.147,45.255-55.859C495.888,163.147,485.605,141.945,477.556,128z'/><path style='fill:%23F26D99;' d='M492.257,325.826c-3.435-21.712-18.664-40.51-45.255-55.859c-30.81-17.788-73.011-29.483-107.522-29.804c-0.049,0-0.104,0-0.158,0l-55.381,96.162c17.533,29.734,48.766,60.44,79.581,78.228c17.598,10.163,34.006,15.255,49.044,15.255c7.684,0,15.016-1.331,21.961-4c21.761-8.365,34.979-27.864,43.027-41.809S495.888,348.853,492.257,325.826z'/></g><g><path style='fill:%23FF80AC;' d='M148.187,97.446C121.6,82.093,97.73,78.309,77.181,86.191C55.42,94.554,42.203,114.055,34.154,128c-27.696,47.973-17.418,86.337,30.554,114.032c30.81,17.788,73.011,29.483,107.522,29.804c0.049,0,0.104,0,0.158,0l55.381-96.162C210.236,145.94,179.001,115.233,148.187,97.446z'/><path style='fill:%23FF80AC;' d='M255.855,0c-55.392,0-83.478,28.087-83.478,83.478c0,35.571,10.972,77.979,27.951,108.028h111.054c16.979-30.049,27.952-72.457,27.952-108.028C339.333,28.087,311.247,0,255.855,0z'/></g><path style='fill:%23F26D99;' d='M311.382,191.506c16.978-30.049,27.951-72.457,27.951-108.028C339.333,28.087,311.247,0,255.855,0v191.506H311.382z'/><path style='fill:%23FFE0B2;' d='M255.855,356.174c-55.234,0-100.174-44.94-100.174-100.174s44.94-100.174,100.174-100.174S356.029,200.766,356.029,256S311.088,356.174,255.855,356.174z'/><path style='fill:%23FFC033;' d='M255.855,189.217c-36.826,0-66.783,29.956-66.783,66.783s29.956,66.783,66.783,66.783s66.783-29.956,66.783-66.783S292.681,189.217,255.855,189.217z'/><path style='fill:%23F26D99;' d='M255.855,320.494V512c55.392,0,83.478-28.087,83.478-83.478c0-35.571-10.972-77.979-27.951-108.028H255.855z'/><path style='fill:%23FDCD99;' d='M356.029,256c0-55.234-44.94-100.174-100.174-100.174v200.348C311.088,356.174,356.029,311.234,356.029,256z'/><path style='fill:%23F9A926;' d='M322.637,256c0-36.826-29.956-66.783-66.783-66.783v133.565C292.681,322.783,322.637,292.826,322.637,256z'/></svg>";
 
-function ArchFrame({ src, alt, delay = 0 }) {
+function ArchFrame({ src, alt, delay = 0, reduceMotion = false }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.7, delay }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : 60, scale: reduceMotion ? 1 : 0.75, rotate: reduceMotion ? 0 : -3 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+      viewport={{ once: true, amount: 0.35 }}
+      transition={{ duration: reduceMotion ? 0.3 : 0.9, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       style={{
         position: "relative",
         width: "min(280px, 80vw)",
@@ -47,10 +47,10 @@ function ArchFrame({ src, alt, delay = 0 }) {
           fill="none"
           stroke={palette.gold}
           strokeWidth="4"
-          initial={{ pathLength: 0 }}
+          initial={{ pathLength: reduceMotion ? 1 : 0 }}
           whileInView={{ pathLength: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 1.4, delay: delay + 0.2, ease: "easeInOut" }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: reduceMotion ? 0 : 1.4, delay: reduceMotion ? 0 : delay + 0.3, ease: "easeInOut" }}
         />
       </svg>
       <div
@@ -60,11 +60,15 @@ function ArchFrame({ src, alt, delay = 0 }) {
           height: "260px",
           margin: "0 auto",
           background: `${palette.ivory}`,
+          overflow: "hidden",
         }}
       >
-        <img
+        <motion.img
           src={src}
           alt={alt}
+          initial={{ scale: reduceMotion ? 1 : 1.25 }}
+          animate={{ scale: reduceMotion ? 1 : [1.25, 1.05, 1.25] }}
+          transition={{ duration: 16, delay: delay + 0.4, repeat: reduceMotion ? 0 : Infinity, ease: "easeInOut" }}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
@@ -98,7 +102,8 @@ const LEAVES = [
   { left: "94%", delay: 4.5, duration: 10, size: 27 },
 ];
 
-function FallingGarland() {
+function FallingGarland({ reduceMotion = false }) {
+  if (reduceMotion) return null;
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden" }}>
       {FLOWERS.map((f, i) => (
@@ -143,6 +148,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
   const isBengali = lang === "bn";
   const fonts = isBengali ? bengaliFonts : englishFonts;
   const scriptFont = isBengali ? bengaliFonts.display : englishFonts.script;
+  const reduceMotion = useReducedMotion();
 
   const weddingDate = new Date(invite.weddingDate);
   const dateParts = {
@@ -162,7 +168,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
         overflow: "hidden",
       }}
     >
-      <FallingGarland />
+      <FallingGarland reduceMotion={reduceMotion} />
 
       {/* Hero */}
       <section
@@ -290,7 +296,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
           </h2>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "2.5rem", justifyContent: "center" }}>
             {invite.photos.map((photo, i) => (
-              <ArchFrame key={photo.publicId || i} src={photo.url} alt={photo.caption || ""} delay={i * 0.1} />
+              <ArchFrame key={photo.publicId || i} src={photo.url} alt={photo.caption || ""} delay={i * 0.18} reduceMotion={reduceMotion} />
             ))}
           </div>
         </section>

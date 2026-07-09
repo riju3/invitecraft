@@ -1,22 +1,29 @@
 import { motion } from "framer-motion";
 import { getTranslation, bengaliFonts } from "../utils/translations";
 
-// "Rajwada" - a royal-court theme. Signature element: photos framed inside
-// an arched haveli-window shape, with a gold border that draws itself in
-// on scroll. Ambient gold dust drifts upward through the page.
+// "Rajwada" - a moonlit-court theme. Deep violet night sky, frost-white
+// ink, gold accents. Signature elements: the couple's names set in a
+// flowing calligraphic script, arched haveli-window photo frames with a
+// gold border that draws itself in on scroll, and flowers + leaves
+// drifting down through the page like petals shaken loose from a garland.
 
 const englishFonts = {
   display: "'Cormorant Garamond', serif",
+  script: "'Alex Brush', cursive",
   body: "'Inter', sans-serif",
 };
 
 const palette = {
-  navy: "#0B1F3D",
-  navyDeep: "#071630",
+  navy: "#1C0B5C",
+  navyMid: "#11003D",
+  navyDeep: "#0A0028",
   gold: "#C9A646",
-  ivory: "#F3EDE0",
-  teal: "#0F4C4C",
+  ivory: "#F5F0FF",
 };
+
+// Small pink flower cluster, reused as a falling-petal sprite.
+const FLOWER_DATA_URI =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><g><path style='fill:%23FF80AC;' d='M311.382,320.494H200.328c-16.978,30.049-27.952,72.457-27.952,108.028c0,55.392,28.087,83.478,83.478,83.478s83.478-28.087,83.478-83.478C339.333,392.951,328.361,350.543,311.382,320.494z'/><path style='fill:%23FF80AC;' d='M172.388,240.162c-0.055,0-0.109,0-0.158,0c-34.511,0.321-76.712,12.016-107.522,29.804C16.735,297.663,6.459,336.027,34.154,384c8.048,13.945,21.266,33.446,43.027,41.809c6.945,2.668,14.271,4,21.961,4c15.038,0,31.446-5.092,49.044-15.255c30.816-17.788,62.049-48.494,79.581-78.228L172.388,240.162z'/></g><g><path style='fill:%23F26D99;' d='M477.556,128c-8.048-13.945-21.266-33.446-43.027-41.809c-20.532-7.891-44.413-4.108-71.005,11.255c-30.816,17.788-62.049,48.494-79.581,78.228l55.381,96.162c0.055,0,0.109,0,0.158,0c34.511-0.321,76.712-12.016,107.522-29.804c26.593-15.348,41.82-34.147,45.255-55.859C495.888,163.147,485.605,141.945,477.556,128z'/><path style='fill:%23F26D99;' d='M492.257,325.826c-3.435-21.712-18.664-40.51-45.255-55.859c-30.81-17.788-73.011-29.483-107.522-29.804c-0.049,0-0.104,0-0.158,0l-55.381,96.162c17.533,29.734,48.766,60.44,79.581,78.228c17.598,10.163,34.006,15.255,49.044,15.255c7.684,0,15.016-1.331,21.961-4c21.761-8.365,34.979-27.864,43.027-41.809S495.888,348.853,492.257,325.826z'/></g><g><path style='fill:%23FF80AC;' d='M148.187,97.446C121.6,82.093,97.73,78.309,77.181,86.191C55.42,94.554,42.203,114.055,34.154,128c-27.696,47.973-17.418,86.337,30.554,114.032c30.81,17.788,73.011,29.483,107.522,29.804c0.049,0,0.104,0,0.158,0l55.381-96.162C210.236,145.94,179.001,115.233,148.187,97.446z'/><path style='fill:%23FF80AC;' d='M255.855,0c-55.392,0-83.478,28.087-83.478,83.478c0,35.571,10.972,77.979,27.951,108.028h111.054c16.979-30.049,27.952-72.457,27.952-108.028C339.333,28.087,311.247,0,255.855,0z'/></g><path style='fill:%23F26D99;' d='M311.382,191.506c16.978-30.049,27.951-72.457,27.951-108.028C339.333,28.087,311.247,0,255.855,0v191.506H311.382z'/><path style='fill:%23FFE0B2;' d='M255.855,356.174c-55.234,0-100.174-44.94-100.174-100.174s44.94-100.174,100.174-100.174S356.029,200.766,356.029,256S311.088,356.174,255.855,356.174z'/><path style='fill:%23FFC033;' d='M255.855,189.217c-36.826,0-66.783,29.956-66.783,66.783s29.956,66.783,66.783,66.783s66.783-29.956,66.783-66.783S292.681,189.217,255.855,189.217z'/><path style='fill:%23F26D99;' d='M255.855,320.494V512c55.392,0,83.478-28.087,83.478-83.478c0-35.571-10.972-77.979-27.951-108.028H255.855z'/><path style='fill:%23FDCD99;' d='M356.029,256c0-55.234-44.94-100.174-100.174-100.174v200.348C311.088,356.174,356.029,311.234,356.029,256z'/><path style='fill:%23F9A926;' d='M322.637,256c0-36.826-29.956-66.783-66.783-66.783v133.565C292.681,322.783,322.637,292.826,322.637,256z'/></svg>";
 
 function ArchFrame({ src, alt, delay = 0 }) {
   return (
@@ -65,28 +72,65 @@ function ArchFrame({ src, alt, delay = 0 }) {
   );
 }
 
-function GoldDust() {
-  const particles = Array.from({ length: 14 });
+// Ambient garland: flowers + leaves drift down through the whole page.
+// Left position, delay, and duration for each sprite are taken directly
+// from the reference animation so the fall speed matches exactly; only
+// the flower count (fewer) and leaf size (bigger) were adjusted per brief.
+const FALL_TIMES = [0, 0.08, 0.92, 1]; // matches the 0% / 8% / 92% / 100% CSS keyframe stops
+const FALL_Y = ["-5vh", "3.8vh", "96.2vh", "105vh"]; // same travel curve for every sprite
+
+const FLOWERS = [
+  { left: "10%", delay: 0, duration: 12, size: 15 },
+  { left: "38%", delay: 5, duration: 14, size: 14 },
+  { left: "66%", delay: 2.5, duration: 11, size: 14 },
+  { left: "88%", delay: 7, duration: 13, size: 12 },
+];
+
+const LEAVES = [
+  { left: "6%", delay: 0.5, duration: 10, size: 27 },
+  { left: "18%", delay: 2.5, duration: 11.5, size: 23 },
+  { left: "30%", delay: 4, duration: 9.5, size: 29 },
+  { left: "42%", delay: 1, duration: 12, size: 21 },
+  { left: "54%", delay: 5.5, duration: 10.5, size: 27 },
+  { left: "62%", delay: 3, duration: 11, size: 23 },
+  { left: "74%", delay: 6.5, duration: 9, size: 25 },
+  { left: "84%", delay: 2, duration: 12.5, size: 21 },
+  { left: "94%", delay: 4.5, duration: 10, size: 27 },
+];
+
+function FallingGarland() {
   return (
     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden" }}>
-      {particles.map((_, i) => (
+      {FLOWERS.map((f, i) => (
         <motion.div
-          key={i}
-          initial={{ y: "110vh", opacity: 0 }}
-          animate={{ y: "-10vh", opacity: [0, 0.7, 0] }}
-          transition={{
-            duration: 8 + (i % 5),
-            repeat: Infinity,
-            delay: i * 0.9,
-            ease: "linear",
-          }}
+          key={`fl-${i}`}
+          initial={{ y: FALL_Y[0], opacity: 0, rotate: 0 }}
+          animate={{ y: FALL_Y, opacity: [0, 0.85, 0.85, 0], rotate: [0, 27.2, 312.8, 340] }}
+          transition={{ duration: f.duration, repeat: Infinity, delay: f.delay, ease: "linear", times: FALL_TIMES }}
           style={{
             position: "absolute",
-            left: `${(i * 7.3) % 100}%`,
-            width: 4,
-            height: 4,
-            borderRadius: "50%",
-            background: palette.gold,
+            left: f.left,
+            width: f.size,
+            height: f.size,
+            backgroundImage: `url("${FLOWER_DATA_URI}")`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+      ))}
+      {LEAVES.map((l, i) => (
+        <motion.div
+          key={`lf-${i}`}
+          initial={{ y: FALL_Y[0], x: 0, opacity: 0, rotate: 0 }}
+          animate={{ y: FALL_Y, x: [0, 2.88, -5.52, -10], opacity: [0, 0.75, 0.75, 0], rotate: [0, 25.6, 294.4, 320] }}
+          transition={{ duration: l.duration, repeat: Infinity, delay: l.delay, ease: "linear", times: FALL_TIMES }}
+          style={{
+            position: "absolute",
+            left: l.left,
+            width: l.size,
+            height: l.size / 1.6,
+            background: palette.ivory,
+            borderRadius: "0 70% 0 70%",
           }}
         />
       ))}
@@ -98,6 +142,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
   const t = getTranslation(lang);
   const isBengali = lang === "bn";
   const fonts = isBengali ? bengaliFonts : englishFonts;
+  const scriptFont = isBengali ? bengaliFonts.display : englishFonts.script;
 
   const weddingDate = new Date(invite.weddingDate);
   const dateParts = {
@@ -109,7 +154,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
   return (
     <div
       style={{
-        background: `linear-gradient(180deg, ${palette.navyDeep}, ${palette.navy})`,
+        background: `linear-gradient(160deg, ${palette.navy} 0%, ${palette.navyMid} 55%, ${palette.navyDeep} 100%)`,
         color: palette.ivory,
         fontFamily: fonts.body,
         minHeight: "100vh",
@@ -117,7 +162,7 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
         overflow: "hidden",
       }}
     >
-      <GoldDust />
+      <FallingGarland />
 
       {/* Hero */}
       <section
@@ -144,22 +189,24 @@ export default function RoyalBlueTemplate({ invite, lang, RsvpForm }) {
           </p>
           <h1
             style={{
-              fontFamily: fonts.display,
-              fontSize: "clamp(2.4rem, 8vw, 4.5rem)",
-              fontWeight: 600,
+              fontFamily: scriptFont,
+              fontWeight: isBengali ? 600 : 400,
+              fontSize: isBengali ? "clamp(2.4rem, 8vw, 4.5rem)" : "clamp(3rem, 11vw, 6rem)",
               lineHeight: 1.15,
               marginBottom: "0.3rem",
+              color: palette.ivory,
             }}
           >
             {invite.brideName}
           </h1>
-          <div style={{ color: palette.gold, fontSize: "1.6rem", margin: "0.3rem 0" }}>&</div>
+          <div style={{ color: palette.gold, fontSize: "1.6rem", margin: "0.3rem 0", fontFamily: fonts.display }}>&</div>
           <h1
             style={{
-              fontFamily: fonts.display,
-              fontSize: "clamp(2.4rem, 8vw, 4.5rem)",
-              fontWeight: 600,
+              fontFamily: scriptFont,
+              fontWeight: isBengali ? 600 : 400,
+              fontSize: isBengali ? "clamp(2.4rem, 8vw, 4.5rem)" : "clamp(3rem, 11vw, 6rem)",
               lineHeight: 1.15,
+              color: palette.ivory,
             }}
           >
             {invite.groomName}
